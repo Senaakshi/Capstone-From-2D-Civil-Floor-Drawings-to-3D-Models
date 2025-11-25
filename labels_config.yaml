@@ -1,0 +1,7 @@
+# Class mapping used by the upgraded UNet & post-processing
+# 0 = background, 1 = wall, 2 = window, 3 = door
+classes:
+  0: background
+  1: wall
+  2: window
+  3: door
