@@ -122,17 +122,18 @@ Mobile AR frameworks
 4. Running Infer - python infer_unet_improved.py
 5. Converting to 3D - python to3d_improved_colour.py
 6. Running the web app - python app_2.py
-7. Directory Structure - /web_uploads/          → user uploads.   
-                         /web_pred/             → segmentation masks. 
-                         /out_3d/               → generated 3D GLB models. 
-                         /unet_model/           → trained .pth UNet file. 
-                         /to3d_improved_colour/ → 3D conversion scripts
-8. Height & Color Customization - Inside to3d_improved_colour.py:
-                                    WALL_H = 3.0          # meters. 
-                                    DOOR_H = 2.1. 
-                                    WIN_SILL = 0.9. 
-                                    WIN_HEAD = 2.1. 
-                                    COLOR_WALL = [210, 140, 80, 160]  # light brown, semi-transparent
+7. Directory Structure - <br>
+   /web_uploads/          → user uploads<br>
+   /web_pred/             → segmentation masks<br> 
+   /out_3d/               → generated 3D GLB models<br> 
+   /unet_model/           → trained .pth UNet file<br> 
+   /to3d_improved_colour/ → 3D conversion scripts
+9. Height & Color Customization - Inside to3d_improved_colour.py:<br>
+    WALL_H = 3.0          # meters<br> 
+    DOOR_H = 2.1<br> 
+    WIN_SILL = 0.9<br> 
+    WIN_HEAD = 2.1<br> 
+    COLOR_WALL = [210, 140, 80, 160]  # light brown, semi-transparent
 
 # Future Work
 
