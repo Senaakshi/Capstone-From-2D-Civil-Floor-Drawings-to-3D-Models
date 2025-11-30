@@ -1,46 +1,147 @@
-# Capstone-From-2D-Civil-Floor-Drawings-to-3D-Models
-This project builds a semi-automated pipeline that converts 2D civil floor plans into interactive 3D models using computer vision, segmentation models (UNet), and 3D geometry reconstruction.
+# CIVIL-3D-PIPELINE: From 2D Civil Floor Drawings to 3D Models
+A Computer Vision + Geometry Reconstruction Pipeline for Automated Building Model Generation
 
-### Key Features
+Disclaimer :THE SAMPLE CODE, MODELS, AND PIPELINE PROVIDED IN THIS PROJECT ARE OFFERED “AS IS”, WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL SENAKSHI KRISHNA MURTHY OR ANY OTHER CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF PROFITS, OR INTERRUPTED WORKFLOW) ARISING IN ANY WAY OUT OF THE USE OF THIS PIPELINE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. USE THIS CODE AT YOUR OWN RISK.
 
-- Image Segmentation (UNet)
-Detects walls, doors, windows, and rooms from scanned 2D drawings.
+# SUMMARY
+Traditional civil engineering drawings are predominantly represented in 2D formats (PDF/PNG/JPG). These drawings, while effective for experts, are difficult for non-technical stakeholders — project managers, clients, community boards — to visualize.
 
-- Polygon Extraction & Cleaning
-Uses geometry libraries (Shapely) to convert segmented masks into valid 2D polygons.
+This project introduces CIVIL-3D-PIPELINE, a semi-automated system that converts 2D civil floor plans into interactive 3D models using:
 
-- Automated 3D Model Generation
-Extrudes 2D polygons into 3D meshes using Trimesh.
+- UNet neural networks for segmentation
+- Geometric polygon reconstruction
+- Automated 3D mesh extrusion
+- GLB/OBJ export for AR/VR or web visualization
 
-- Realistic Coloring & Transparency
-Semi-transparent walls, door openings, window frames, customizable materials.
+Unlike manual CAD modeling (slow, expensive, error-prone), this pipeline accelerates floor-plan interpretation, reduces modeling time, and enhances stakeholder communication.
 
-- Export to GLB/OBJ
-Outputs 3D models ready for visualization in browsers, Blender, or AR/VR viewers.
+- The pipeline detects and reconstructs:
+- Walls (extruded 3D geometry)
+- Doors (cut-out openings)
+- Windows (sill & head-level geometry)
+- Rooms (floor slabs)
 
-- Fast Batch-Processing Pipeline
-Process thousands of plans with a single command.
+The final model is stylized with semi-transparent walls, adjustable color themes, and export-ready 3D meshes.
 
-### Tech Stack
+# Datasets Used
+(User collected a mixed dataset; list can be customized)
+- Hand-collected CAD-to-PNG civil plan dataset
+- Public floor-plan datasets (R-FP, CubiCasa5k segments)
+- Weak-labeled pseudo masks generated from contour-based algorithms
 
-Python, OpenCV, NumPy
+# Key Contributions
+1. Fully Automated Computer Vision Pipeline
+From raw floor plan → segmentation → polygon extraction → 3D mesh.
+2. UNet-based Floor Plan Segmentation
+Trained on thousands of annotated/mechanically labeled plans.
+3. Geometry Reconstruction Engine
+Shapely-powered polygon extraction and cleaning.
+4. 3D Extrusion System
+Wall height, window sill/head height, door opening logic.
+5. Web UI (Flask) Integration
+Upload → Process → Preview 3D Model in Browser.
+6. AR/VR Ready GLB Output
+Models are directly compatible with Three.js, Babylon.js, and Blender.
 
-UNet Segmentation Model
+# Pipeline Architecture
+1. Input Processing
+- Accepts .png, .jpg, .pdf (converted to image)
+- Preprocessing includes resizing, denoising, inversion, contour smoothing
 
-Shapely for geometric reconstruction
+2. UNet Segmentation
 
-Trimesh / PyVista for 3D modeling & visualization
+- Classes:
+0 → Background
+1 → Walls
+2 → Doors
+3 → Windows
+4 → Rooms
 
-GLTF/GLB Exporter
+Output: a segmentation mask with class-separated channels.
 
-### Project Aim
+3. Polygon Extraction
 
-To bridge traditional 2D civil engineering drawings with modern 3D/AR visualization, enabling architects, engineers, and construction teams to understand plans faster and more accurately.
+- Using Shapely, the system:
+- Converts mask → contours → polygons
+- Removes noise / small polygons
+- Repairs invalid geometry using buffer(0)
+- Merges polygons when appropriate (unary_union)
 
-### Status
+4. 3D Model Generation
 
--- Working pipeline
--- Model trained
--- 3D visualization working (with coloring)
--- Improving height normalization & color customization
--- Web-based uploader → auto 3D viewer
+- Using Trimesh:
+- Walls = extruded polygons
+- Doors = boolean subtract operations
+- Windows = raised slabs between sill and head height
+- Rooms = flat floor slabs
+
+Optional features:
+
+- Wall color presets (teal / brown / grey)
+- Adjustable transparency
+- Background color switching
+
+5. Export
+
+Outputs:
+
+.glb
+.obj
+.ply
+.stl
+
+These can be loaded into:
+
+Blender
+WebGL/Three.js viewer
+Unity/Unreal
+Mobile AR frameworks
+
+# Models Used
+1. Segmentation Models
+
+- UNet (Baseline)
+- UNet (Improved with Encoder: ResNet34)
+- UNet++ (Experimental)
+
+2. Geometry / Reconstruction
+
+- Shapely
+- OpenCV
+- Trimesh
+
+3. Visualization
+- PyVista
+- pygltflib (material editing)
+- Three.js (web viewer)
+
+# Installing & Running the Pipeline
+1. Clone the Repo git clone - https://github.com/Senaakshi/Capstone-From-2D-Civil-Floor-Drawings-to-3D-Models.git
+2. Install Requirements - pip install -r requirements.txt
+3. Running the UNet  - python train_unet_improved.py
+4. Running Infer - python infer_unet_improved.py
+5. Converting to 3D - python to3d_improved_colour.py
+6. Running the web app - python app_2.py
+7. Directory Structure - /web_uploads/          → user uploads
+                         /web_pred/             → segmentation masks
+                         /out_3d/               → generated 3D GLB models
+                         /unet_model/           → trained .pth UNet file
+                         /to3d_improved_colour/ → 3D conversion scripts
+8. Height & Color Customization - Inside to3d_improved_colour.py:
+                                    WALL_H = 3.0          # meters
+                                    DOOR_H = 2.1
+                                    WIN_SILL = 0.9
+                                    WIN_HEAD = 2.1
+
+                                    COLOR_WALL = [210, 140, 80, 160]  # light brown, semi-transparent
+
+# Future Work
+
+- Height normalization dataset
+- Multi-floor support
+- Material realism (PBR textures)
+- True CAD line-thickness interpretation
+- Point-cloud export
+- Integration with HoloLens / Vision Pro                                    
+
+
